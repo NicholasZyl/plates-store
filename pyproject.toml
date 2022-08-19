@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "plates-store"
+version = "0.1.0"
+description = "Backend application for storing and retrieving German license plates."
+authors = ["Mikołaj 'Nick' Żyłkowski <mzylkowski@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+pytest-cov = "^3.0.0"
+pre-commit = "^2.20.0"
+flake8 = "^5.0.4"
+safety = "^2.1.1"
+mypy = "^0.971"
+flake8-pytest-style = "^1.6.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
