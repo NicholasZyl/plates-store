@@ -25,7 +25,6 @@ repos:
         description: styleguide enforcement
         entry: poetry run flake8
         files: ^({PROJECT_NAME}/|tests/)
-        args: ["--config=setup.cfg"]
         language: system
         types: [python]
       - id: mypy
