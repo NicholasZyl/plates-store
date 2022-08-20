@@ -24,21 +24,21 @@ repos:
         name: local flake8
         description: styleguide enforcement
         entry: poetry run flake8
-        files: ^({PROJECT_NAME}/|tests/)
+        files: ^(src/|tests/)
         language: system
         types: [python]
       - id: mypy
         name: local mypy
         description: static type checker
-        entry: poetry run mypy
-        files: ^({PROJECT_NAME}/|tests/)
+        entry: poetry run mypy --strict
+        files: ^(src/|tests/)
         language: system
         types: [python]
       - id: coverage
         name: local pytest coverage
         description: runs pytest along with coverage
         entry: poetry run pytest --cov {PROJECT_NAME} tests
-        files: ^({PROJECT_NAME}/|tests/)
+        files: ^(src/|tests/)
         language: system
         types: [python]
       - id: safety
