@@ -16,7 +16,8 @@ class SqlAlchemyLicensePlatesRepository(LicensePlatesRepository):
         self._session.add(license_plate)
 
     def get_all(self) -> typing.List[LicensePlate]:
-        return self._session.query(LicensePlate).all()
+        plates: typing.List[LicensePlate] = self._session.query(LicensePlate).all()
+        return plates
 
 
 metadata = MetaData()

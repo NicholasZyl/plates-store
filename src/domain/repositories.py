@@ -9,8 +9,17 @@ class LicensePlatesRepository(abc.ABC):
 
     @abc.abstractmethod
     def add(self, license_plate: LicensePlate) -> None:
-        pass
+        """
+        Add license plate to the repository.
+
+        :param license_plate:
+        :return:
+        """
 
     @abc.abstractmethod
     def get_all(self) -> typing.List[LicensePlate]:
-        pass
+        """
+        Get all stored license plates.
+
+        :return:
+        """
