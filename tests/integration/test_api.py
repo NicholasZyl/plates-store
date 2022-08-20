@@ -25,3 +25,15 @@ def test_store_plates_endpoint_accepts_plate_numbers(test_client: FlaskClient) -
     response = test_client.post('/plate', json={"plate": "M-PP123"})
 
     assert response.status_code == 200
+
+
+def test_store_plates_endpoint_fails_with_empty_request(test_client: FlaskClient) -> None:
+    response = test_client.post('/plate')
+
+    assert response.status_code == 400
+
+
+def test_store_plates_endpoint_fails_with_malformed_request(test_client: FlaskClient) -> None:
+    response = test_client.post('/plate', json={"data": "M-PP123"})
+
+    assert response.status_code == 400
