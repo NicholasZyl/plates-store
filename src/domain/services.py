@@ -1,7 +1,13 @@
 import typing
 
-from ..domain.entities import LicensePlate
+from ..domain.entities import LicensePlate, InvalidGermanLicensePlateNumber
 from ..domain.repositories import LicensePlatesRepository
+
+
+class NonProcessablePlateNumber(Exception):
+    """
+    Raised when plate number cannot be processed.
+    """
 
 
 class PlatesStore:
@@ -10,7 +16,11 @@ class PlatesStore:
         self._repository = repository
 
     def store(self, plates_number: str) -> None:
-        license_plate = LicensePlate(plates_number)
+        try:
+            license_plate = LicensePlate(plates_number)
+        except InvalidGermanLicensePlateNumber:
+            raise NonProcessablePlateNumber("Not a valid German plate number")
+
         self._repository.add(license_plate)
 
     def retrieve(self) -> typing.List[LicensePlate]:

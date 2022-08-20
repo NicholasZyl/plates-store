@@ -6,6 +6,13 @@ services:
       dockerfile: Dockerfile
       args:
         IS_DEVELOPMENT: 1
+    depends_on:
+      - postgres
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=54321
+      - DB_USER=api
+      - DB_PASSWORD=qwerty1234
     networks:
       - api
     ports:
@@ -14,5 +21,21 @@ services:
       - ./src:/user/app/src
       - ./tests:/user/app/tests
 
+  postgres:
+    image: postgres:14.5
+    environment:
+      - POSTGRES_USER=api
+      - POSTGRES_PASSWORD=qwerty1234
+      - POSTGRES_DB=plates_store
+    networks:
+      - api
+    ports:
+      - "54321:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+
 networks:
   api:
+
+volumes:
+  db:

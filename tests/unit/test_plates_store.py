@@ -1,11 +1,13 @@
 import datetime
 
 import typing
+
+import pytest
 from freezegun import freeze_time
 
 from src.domain.entities import LicensePlate
 from src.domain.repositories import LicensePlatesRepository
-from src.domain.services import PlatesStore
+from src.domain.services import PlatesStore, NonProcessablePlateNumber
 
 
 class FakeRepository(LicensePlatesRepository):
@@ -44,3 +46,10 @@ def test_it_stores_license_plate_with_actual_timestamp() -> None:
     plates = plates_store.retrieve()
 
     assert plates[0].timestamp == datetime.datetime(2020, 9, 18, 13, 21, 21)
+
+
+def test_it_raises_exception_when_plate_number_is_not_valid() -> None:
+    plates_store = PlatesStore(FakeRepository([]))
+
+    with pytest.raises(NonProcessablePlateNumber):
+        plates_store.store("W12345")
