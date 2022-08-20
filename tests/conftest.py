@@ -1,22 +1,23 @@
+from typing import Generator
+
 import pytest
-import typing
 
-from src.domain.entities import LicensePlate
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, Session, clear_mappers
+
 from src.domain.repositories import LicensePlatesRepository
-
-
-class FakeRepository(LicensePlatesRepository):
-
-    def __init__(self, plates: typing.List[LicensePlate]):
-        self._plates = plates
-
-    def add(self, license_plate: LicensePlate) -> None:
-        self._plates.append(license_plate)
-
-    def get_all(self) -> typing.List[LicensePlate]:
-        return self._plates
+from src.infrastructure.orm import SqlAlchemyLicensePlatesRepository, metadata, start_mappers
 
 
 @pytest.fixture()
-def in_memory_repository() -> LicensePlatesRepository:
-    return FakeRepository([])
+def in_memory_db() -> Generator[Session, None, None]:
+    engine = create_engine("sqlite:///:memory:")
+    metadata.create_all(engine)
+    start_mappers()
+    yield sessionmaker(bind=engine)()
+    clear_mappers()
+
+
+@pytest.fixture()
+def in_memory_repository(in_memory_db: Session) -> LicensePlatesRepository:
+    return SqlAlchemyLicensePlatesRepository(in_memory_db)
