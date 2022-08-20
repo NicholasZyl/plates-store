@@ -34,3 +34,31 @@ def test_it_cannot_have_empty_number() -> None:
 def test_number_must_have_a_hyphen() -> None:
     with pytest.raises(InvalidGermanLicensePlateNumber):
         LicensePlate("MPP123")
+    with pytest.raises(InvalidGermanLicensePlateNumber):
+        LicensePlate("MP-P-123")
+
+
+def test_number_must_have_one_to_three_characters_before_hyphen() -> None:
+    with pytest.raises(InvalidGermanLicensePlateNumber):
+        LicensePlate("-AA123")
+    with pytest.raises(InvalidGermanLicensePlateNumber):
+        LicensePlate("MMMM-AA123")
+
+
+def test_number_must_have_one_to_two_characters_after_hyphen() -> None:
+    with pytest.raises(InvalidGermanLicensePlateNumber):
+        LicensePlate("M-123")
+    with pytest.raises(InvalidGermanLicensePlateNumber):
+        LicensePlate("M-AAA123")
+
+
+def test_number_must_end_with_maximum_four_digits_in_the_end() -> None:
+    with pytest.raises(InvalidGermanLicensePlateNumber):
+        LicensePlate("M-A12345")
+    with pytest.raises(InvalidGermanLicensePlateNumber):
+        LicensePlate("M-A")
+
+
+def test_number_end_digits_cannot_start_with_zero() -> None:
+    with pytest.raises(InvalidGermanLicensePlateNumber):
+        LicensePlate("M-A0123")

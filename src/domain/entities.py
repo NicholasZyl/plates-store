@@ -1,4 +1,5 @@
 import datetime
+import re
 
 
 class InvalidGermanLicensePlateNumber(Exception):
@@ -15,5 +16,6 @@ class LicensePlate:
 
     @staticmethod
     def _validate_plate_number(plate_number: str) -> None:
-        if plate_number == "" or "-" not in plate_number:
+        match = re.search(r'^[A-Z]{1,3}\-[A-Z]{1,2}[1-9]\d{,3}$', plate_number)
+        if not match:
             raise InvalidGermanLicensePlateNumber()
