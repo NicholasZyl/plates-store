@@ -31,7 +31,6 @@ def in_memory_repository(in_memory_db_session: Session) -> LicensePlatesReposito
 
 @pytest.fixture()
 def _with_clean_postgres_db() -> None:
-    print("Clean postgres")
-    # engine = create_engine("postgresql://api:qwerty1234@localhost:54321/plates_store", echo=True)
-    # metadata.create_all(engine)
-    # metadata.drop_all(engine)
+    engine = create_engine("postgresql://test:test1234@localhost:54321/plates_store")
+    metadata.create_all(engine)
+    engine.execute("DELETE FROM license_plates;")
