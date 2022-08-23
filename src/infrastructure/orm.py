@@ -1,10 +1,11 @@
 import typing
 
 from sqlalchemy import Table, MetaData, Column, String, DateTime
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, mapper
 
 from src.domain.entities import LicensePlate
-from src.domain.repositories import LicensePlatesRepository
+from src.domain.repositories import LicensePlatesRepository, LicenseAlreadyStored
 
 
 class SqlAlchemyLicensePlatesRepository(LicensePlatesRepository):
@@ -13,7 +14,12 @@ class SqlAlchemyLicensePlatesRepository(LicensePlatesRepository):
         self._session = session
 
     def add(self, license_plate: LicensePlate) -> None:
-        self._session.add(license_plate)
+        try:
+            self._session.add(license_plate)
+            self._session.commit()
+        except SQLAlchemyError:
+            self._session.rollback()
+            raise LicenseAlreadyStored()
 
     def get_all(self) -> typing.List[LicensePlate]:
         plates: typing.List[LicensePlate] = self._session.query(LicensePlate).all()

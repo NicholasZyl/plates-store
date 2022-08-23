@@ -5,6 +5,12 @@ import typing
 from ..domain.entities import LicensePlate
 
 
+class LicenseAlreadyStored(Exception):
+    """
+    Raised when given license plate is already stored.
+    """
+
+
 class LicensePlatesRepository(abc.ABC):
 
     @abc.abstractmethod

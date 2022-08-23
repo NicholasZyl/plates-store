@@ -2,17 +2,21 @@ from typing import Generator
 
 import pytest
 from flask.testing import FlaskClient
+from freezegun import freeze_time
+from sqlalchemy.engine import Engine
 
 from src.application.flask_app import create_app
-from src.domain.repositories import LicensePlatesRepository
+from src.infrastructure.orm import metadata
 
 
 @pytest.fixture()
-def test_client(in_memory_repository: LicensePlatesRepository) -> Generator[FlaskClient, None, None]:
-    app = create_app(in_memory_repository)
+def test_client(in_memory_db_engine: Engine) -> Generator[FlaskClient, None, None]:
+    app = create_app(in_memory_db_engine)
 
     with app.test_client() as client:
         yield client
+    metadata.drop_all(in_memory_db_engine)
+    metadata.create_all(in_memory_db_engine)
 
 
 def test_get_plates_endpoint_returns_list(test_client: FlaskClient) -> None:
@@ -44,3 +48,23 @@ def test_store_plates_endpoint_fails_with_unprocessable_if_input_is_not_german_p
     response = test_client.post('/plate', json={"plate": "W12345"})
 
     assert response.status_code == 422
+
+
+@freeze_time("2020-09-18T13:21:21Z")
+def test_store_plates_endpoint_fails_with_conflict_if_same_plate_tries_to_be_stored(test_client: FlaskClient) -> None:
+    test_client.post('/plate', json={"plate": "M-PP123"})
+    response = test_client.post('/plate', json={"plate": "M-PP123"})
+
+    assert response.status_code == 409
+
+
+@freeze_time("2020-09-18T13:21:21Z")
+def test_get_plates_endpoint_returns_stored_plates(test_client: FlaskClient) -> None:
+    test_client.post('/plate', json={"plate": "M-PP123"})
+
+    plates = test_client.get('/plate').json
+
+    assert plates is not None
+    assert len(plates) == 1
+    assert plates[0]["plate"] == "M-PP123"
+    assert plates[0]['timestamp'] == "2020-09-18T13:21:21Z"

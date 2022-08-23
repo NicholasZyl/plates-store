@@ -1,6 +1,7 @@
 version: "3.0"
 services:
   api:
+    platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,7 +11,7 @@ services:
       - postgres
     environment:
       - DB_HOST=postgres
-      - DB_PORT=54321
+      - DB_PORT=5432
       - DB_USER=api
       - DB_PASSWORD=qwerty1234
     networks:
@@ -18,10 +19,10 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./src:/user/app/src
-      - ./tests:/user/app/tests
+      - .:/user/app/:delegated
 
   postgres:
+    platform: linux/amd64
     image: postgres:14.5
     environment:
       - POSTGRES_USER=api
